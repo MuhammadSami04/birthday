@@ -1,0 +1,287 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Hi Jan 💙 This is Your Birthday Wish</title>
+  <style>
+    :root{
+      --navy:#4a0006;    /* deep maroon */
+      --teal:#b3222a;    /* warm crimson */
+      --aqua:#ff6b6b;    /* coral red accent */
+      --soft:#ffeef0;    /* soft pinky text */
+      --glass: rgba(255,255,255,0.06);
+      --white: #ffffff;
+      --accent: #ff8a94;
+      --shadow: 0 12px 36px rgba(74,0,6,0.12);
+      font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+    }
+    html,body{height:100%;margin:0;background:linear-gradient(180deg,var(--navy) 0%, #6b0f12 50%, #2a0004 100%);color:var(--soft);-webkit-font-smoothing:antialiased;}
+    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px;box-sizing:border-box}
+    .card{width:100%;max-width:920px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border-radius:18px;padding:22px;box-shadow:var(--shadow);position:relative;overflow:hidden;border:1px solid rgba(255,255,255,0.03)}
+
+    /* Waves & bubbles background */
+    .waves{position:absolute;left:0;right:0;top:0;height:220px;pointer-events:none;opacity:0.9;mix-blend-mode:screen}
+    .wave{position:absolute;left:50%;transform:translateX(-50%);opacity:0.18}
+    .bubbles{position:absolute;right:-10px;bottom:-10px;pointer-events:none}
+    .bubble{width:14px;height:14px;background:radial-gradient(circle at 30% 30%, #ffffffcc, #ffd9dfbb);border-radius:50%;opacity:0.9;animation:float 6s infinite ease-in-out}
+    .bubble:nth-child(2){width:22px;height:22px;animation-duration:8s;right:10px;background:radial-gradient(circle at 30% 30%, #fff1f3cc, #ffb6bfbb)}
+    .bubble:nth-child(3){width:10px;height:10px;animation-duration:5s;background:radial-gradient(circle at 30% 30%, #fff1f3cc, #ffc9d0bb)}
+    @keyframes float{0%{transform:translateY(0) translateX(0)}50%{transform:translateY(-18px) translateX(6px)}100%{transform:translateY(0) translateX(0)}}
+
+    /* Pages */
+    .page{min-height:60vh;transition:opacity .6s ease, transform .6s ease;opacity:0;transform:translateY(10px);display:none}
+    .page.active{opacity:1;transform:translateY(0);display:block}
+
+    /* Page 1 */
+    .intro{padding:28px 20px;text-align:center}
+    h1{margin:6px 0 10px 0;font-size:clamp(22px,4.5vw,36px);color:var(--white);letter-spacing:0.2px}
+    .lead{color:rgba(255,255,255,0.85);font-size:clamp(14px,2.2vw,18px);margin-bottom:18px}
+    .pass{display:flex;gap:10px;justify-content:center;align-items:center}
+    .pass input{width:280px;max-width:70%;padding:12px 14px;border-radius:12px;border:1px solid rgba(255,255,255,0.08);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));color:var(--white);font-size:16px;outline:none;box-shadow:inset 0 1px 0 rgba(255,255,255,0.02)}
+    .btn{background:linear-gradient(90deg,var(--teal),var(--aqua));padding:10px 14px;border-radius:12px;color:var(--white);font-weight:700;border:none;cursor:pointer}
+    .hint{margin-top:12px;color:#cfeff3}
+    .shake{animation:shake .4s ease}
+    @keyframes shake{0%{transform:translateX(0)}25%{transform:translateX(-8px)}50%{transform:translateX(8px)}75%{transform:translateX(-6px)}100%{transform:translateX(0)}}
+
+    /* Page 2 carousel */
+    .carousel-wrap{padding:18px}
+    .carousel{position:relative;overflow:hidden;border-radius:14px;border:1px solid rgba(255,255,255,0.04)}
+    .slides{display:flex;transition:transform .6s cubic-bezier(.2,.9,.28,1);will-change:transform}
+    .slide{min-width:100%;height:360px;display:flex;align-items:flex-end;justify-content:center;background:#072233;position:relative}
+    .slide img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;filter:brightness(.9) saturate(.95)}
+    .caption{position:relative;padding:18px;background:linear-gradient(180deg, transparent, rgba(18,6,6,0.45));width:100%;box-sizing:border-box;color:var(--soft);font-size:16px}
+    .carousel-frame{position:absolute;inset:0;pointer-events:none}
+    .frame-svg{width:100%;height:100%}
+
+    .controls{display:flex;justify-content:space-between;align-items:center;margin-top:12px}
+    .dots{display:flex;gap:8px}
+    .dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.12);cursor:pointer}
+    .dot.active{background:var(--aqua)}
+    
+    .next{margin-left:auto}
+    .overlay-next{position:absolute;right:18px;bottom:28px;z-index:6;pointer-events:auto}
+    .hint-overlay{left:18px;bottom:72px;position:absolute;z-index:5;color:#bfeff6;opacity:0.95}
+
+    /* Page 3 */
+    .wish{padding:20px;line-height:1.6;color:#eaf8fb;font-size:16px}
+    .wish p{margin:0 0 12px 0}
+    .confetti{position:absolute;left:0;right:0;top:0;bottom:0;pointer-events:none}
+    .heart{color:#ffb6d0;margin-left:6px}
+
+    /* Responsive */
+    @media (max-width:600px){.card{padding:16px;border-radius:14px}.slide{height:58vw}.pass input{width:66%}}
+
+    /* small helper */
+    .small{font-size:13px;color:#bfeff6}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="card">
+
+      <div class="waves" aria-hidden="true">
+        <svg class="wave" width="1200" height="220" viewBox="0 0 1200 220" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M0 120 C150 40 350 200 600 120 C850 40 1050 200 1200 120 L1200 220 L0 220 Z" fill="url(#g)" />
+          <defs>
+            <linearGradient id="g" x1="0" x2="1">
+              <stop offset="0" stop-color="#4a0006" stop-opacity="0.9"/>
+              <stop offset="1" stop-color="#7a0f12" stop-opacity="0.8"/>
+            </linearGradient>
+          </defs>
+        </svg>
+      </div>
+
+      <div class="bubbles" aria-hidden="true">
+        <div class="bubble" style="right:20px;bottom:50px"></div>
+        <div class="bubble" style="right:70px;bottom:10px"></div>
+        <div class="bubble" style="right:38px;bottom:100px"></div>
+      </div>
+
+      <!-- Page 1: Passcode Gate -->
+      <section id="page1" class="page active">
+        <div class="intro">
+          <h1>Hi Jan 💙 This is Your Birthday Wish</h1>
+          <div class="lead">A tiny surprise from your silly bestie — waves, hugs, and a little mischief 🌊😉<br>Type the secret and come inside, baby.</div>
+
+          <div class="pass" aria-label="Passcode gate">
+            <input id="passcode" inputmode="numeric" placeholder="Enter the secret code to unlock your surprise 🌊" maxlength="6" />
+            <button id="enterBtn" class="btn">Open</button>
+          </div>
+          <div id="passMsg" class="hint small">Hint: Think of a day I never forget 😏</div>
+        </div>
+      </section>
+
+      <!-- Page 2: Carousel -->
+      <section id="page2" class="page" aria-hidden="true">
+        <div class="carousel-wrap">
+          <div class="carousel" id="carousel">
+            <div class="slides" id="slides">
+              <div class="slide">
+                <img src="IMG-20260814-WA0006.jpg" alt="photo 1" />
+                <div class="caption">Remember this goofy day? You made me laugh till I snorted, jan ❤️</div>
+                <div class="hint-overlay small">Akhri pic pe 'Next 💙' pe jaane ka button hai</div>
+              </div>
+              <div class="slide">
+                <img src="img2.jpg" alt="photo 2" />
+                <div class="caption">That time we got lost and found the best chai — baby, your smile fixed everything ☕️💙</div>
+              </div>
+              <div class="slide">
+                <img src="" alt="photo 3" />
+                <div class="caption">You pretending to be serious — cutest thing ever. I still tease you about it 😏</div>
+              </div>
+              <div class="slide">
+                <img src="img4.jpg" alt="photo 4" />
+                <div class="caption">Late-night talks, crazy plans, and you holding my hand when I needed it most.</div>
+              </div>
+              <div class="slide">
+                <img src="img5.jpg" alt="photo 5" />
+                <div class="caption">Here’s to more messy, perfect, ridiculous adventures together — love you, jan 💙</div>
+                <button id="overlayNext" class="overlay-next btn">nechy next pe click kar 💙</button>
+                
+              </div>
+            </div>
+            <div class="carousel-frame" aria-hidden="true">
+              <svg class="frame-svg" viewBox="0 0 1200 600" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="f1" x1="0" x2="1">
+                    <stop offset="0" stop-color="#7a0f12" stop-opacity="0.7"/>
+                    <stop offset="1" stop-color="#4a0006" stop-opacity="0.35"/>
+                  </linearGradient>
+                </defs>
+                <rect x="0" y="0" width="1200" height="600" fill="none" stroke="url(#f1)" stroke-width="8" rx="14"/>
+                <path d="M0 500 Q150 420 300 480 T600 480 T900 480 T1200 480 L1200 600 L0 600 Z" fill="#042e3b" opacity="0.08"/>
+              </svg>
+            </div>
+          </div>
+
+          <div class="controls">
+            <div class="dots" id="dots"></div>
+            <div class="next">
+              <button id="toPage3" class="btn" style="display:none">Next 💙</button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Page 3: The Birthday Wish -->
+      <section id="page3" class="page" aria-hidden="true">
+        <div class="wish">
+          <p>Hi jana this is your birthday … hena, oky lets wish u .. wesy to u don’t like to celebrate and wishes also but itz zarorri .. hehehehe … mily the 2019 main or aj dek itna time ho gya to many up and downs to many laraiyan or wo laraiyan jin ko dek k log kehty thy ab ye ni milty lakin after a very short time we were together , or ab to yad hi ni last time lary kb thy han din to achy hain ye bhe lakin lrai ka apna maaza hy 
+
+chl ab sukkkriya kar lia jae … wesy to kam hi suukkkriya krty hain .. lakin thank u mery pe her time musalat rehny k liye thank u mery ko ooooo usss time hhelp krny k liyyee or ooooo ussss time bhe or uusssss time bhe orr  usss time bhe … hehehehe 
+
+
+mazaq sy hath k ab shukriya hehehehe … 
+
+allah tujy kmyab kry or phir tujy jo pesy mlain kmybi k bad wo sary mujy trsfer kar dena jazz cash to hy ni easy paisa kar dena 
+
+oky ??? 
+
+happy birthday jannam!!!!! 
+ <span class="heart">♥️</span></p>
+
+          <p class="small" style="margin-top:12px">— lots of love --- ap ka  ___________ samj gya na?</p>
+        </div>
+        <div style="height:14px"></div>
+      </section>
+
+    </div>
+  </div>
+
+  <script>
+    // Simple page manager
+    const pages = {p1:document.getElementById('page1'), p2:document.getElementById('page2'), p3:document.getElementById('page3')};
+    function showPage(n){
+      Object.values(pages).forEach(p=>{p.classList.remove('active');p.setAttribute('aria-hidden','true')});
+      pages['p'+n].classList.add('active');pages['p'+n].setAttribute('aria-hidden','false');
+    }
+
+    // Passcode logic
+    const passInput = document.getElementById('passcode');
+    const passBtn = document.getElementById('enterBtn');
+    const passMsg = document.getElementById('passMsg');
+    const CORRECT = '0406';
+    function badSoon(msg){
+      passMsg.textContent = msg;
+      passInput.classList.add('shake');
+      setTimeout(()=>passInput.classList.remove('shake'),420);
+    }
+    passBtn.addEventListener('click',tryPass);
+    passInput.addEventListener('keydown', (e)=>{ if(e.key==='Enter') tryPass(); });
+
+    function tryPass(){
+      const v = passInput.value.trim();
+      if(v===CORRECT){
+        passMsg.textContent = "Yayy! Come in, baby 💙";
+        showPage(2);
+        startCarousel();
+      } else {
+        badSoon('Nahi baba, soch ke dobara try karo 😏 may be meri hi bithday');
+      }
+    }
+
+    // Carousel
+    const slidesEl = document.getElementById('slides');
+    const dotsEl = document.getElementById('dots');
+    const slideCount = slidesEl.children.length;
+    let cur = 0;
+    let autoplay = null;
+
+    function makeDots(){
+      for(let i=0;i<slideCount;i++){
+        const d = document.createElement('div');d.className='dot';d.dataset.i=i;d.addEventListener('click',()=>goTo(i));dotsEl.appendChild(d);
+      }
+      setActiveDot();
+    }
+    function setActiveDot(){
+      Array.from(dotsEl.children).forEach((dot,idx)=>dot.classList.toggle('active', idx===cur));
+    }
+    function goTo(i){
+      cur = (i+slideCount)%slideCount; slidesEl.style.transform = `translateX(${-cur*100}%)`; setActiveDot(); updateNextVisibility();
+    }
+    function nextSlide(){ goTo(cur+1); }
+    function startCarousel(){ if(autoplay) return; autoplay = setInterval(nextSlide,3800); }
+    function stopCarousel(){ if(autoplay){ clearInterval(autoplay); autoplay=null; } }
+
+    // swipe support
+    let startX=0,deltaX=0;
+    slidesEl.addEventListener('touchstart', e=>{ stopCarousel(); startX = e.touches[0].clientX; },{passive:true});
+    slidesEl.addEventListener('touchmove', e=>{ deltaX = e.touches[0].clientX - startX; slidesEl.style.transform = `translateX(${ -cur*100 + (deltaX/slidesEl.clientWidth)*100 }%)`; },{passive:true});
+    slidesEl.addEventListener('touchend', e=>{ if(Math.abs(deltaX)>40){ if(deltaX<0) nextSlide(); else goTo(cur-1); } slidesEl.style.transform = `translateX(${-cur*100}%)`; startCarousel(); deltaX=0; });
+
+    makeDots();
+
+    // show/hide Next button when on last slide and overlay wiring
+    const toPage3Btn = document.getElementById('toPage3');
+    const overlayNext = document.getElementById('overlayNext');
+    function updateNextVisibility(){
+      if(toPage3Btn) toPage3Btn.style.display = (cur === slideCount-1) ? 'inline-block' : 'none';
+    }
+    updateNextVisibility();
+    if(overlayNext){ overlayNext.addEventListener('click', ()=>{ showPage(3); stopCarousel(); }); }
+
+    // 'Next' to page 3 (bottom button)
+    if(document.getElementById('toPage3')) document.getElementById('toPage3').addEventListener('click', ()=>{ showPage(3); stopCarousel(); });
+
+    // Small UX: if user already knows code and loads, focus
+    passInput.focus();
+
+    // Decorative float for confetti/bubbles on page 3
+    (function makeFloating(){
+      const conf = document.createElement('div'); conf.className='confetti'; document.querySelector('.card').appendChild(conf);
+      for(let i=0;i<18;i++){
+        const e = document.createElement('div'); e.style.position='absolute'; e.style.left=Math.random()*100+'%'; e.style.top=Math.random()*100+'%'; e.style.width=(8+Math.random()*12)+'px'; e.style.height=e.style.width; e.style.background=['#7fd3e6','#aeeff9','#ffd2e8'][i%3]; e.style.opacity=0.9; e.style.borderRadius='50%'; e.style.transform='translateY(0)'; e.style.filter='blur(0.2px)'; e.style.animation=`float ${4+Math.random()*6}s ease-in-out ${Math.random()*2}s infinite`; conf.appendChild(e);
+      }
+    })();
+
+    // Optional: keyboard shortcut to reveal for testing
+    document.addEventListener('keydown', e=>{ if(e.ctrlKey && e.key==='1'){ passInput.value=CORRECT; tryPass(); } });
+
+    // Accessibility: reduce motion
+    const mq = window.matchMedia('(prefers-reduced-motion: reduce)');
+    if(mq.matches){ stopCarousel(); }
+
+  </script>
+</body>
+</html>
